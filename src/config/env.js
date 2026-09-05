@@ -14,16 +14,25 @@ for (const envVar of requiredEnvVars) {
     }
 }
 
-// ✅ Include your Netlify URL here
-const corsOrigins = process.env.CORS_ORIGIN 
-    ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
-    : [
-        'http://localhost:3000', 
-        'http://localhost:3001', 
+// ✅ ADD YOUR VERCEL URL HERE
+const getCorsOrigins = () => {
+    if (process.env.CORS_ORIGIN) {
+        return process.env.CORS_ORIGIN
+            .split(',')
+            .map(origin => origin.trim().replace(/\/$/, ''))
+            .filter(origin => origin.length > 0);
+    }
+    
+    // Default origins - ADD ALL YOUR FRONTEND URLs
+    return [
+        'http://localhost:3000',
+        'http://localhost:3001',
         'http://localhost:3002',
-        'http://localhost:5173',  // Vite default
-        'https://smartpickle.vercel.app/'  // 👈 Your Vercel frontend
+        'http://localhost:5173',
+        'https://smartpickleball.netlify.app',  // Netlify deployment
+        'https://smartpickle.vercel.app'       // 👈 ADD THIS - Vercel deployment
     ];
+};
 
 module.exports = {
     port: process.env.PORT || 3000,
@@ -37,6 +46,6 @@ module.exports = {
         secret: process.env.JWT_SECRET,
     },
     cors: {
-        origin: corsOrigins,
+        origin: getCorsOrigins(),
     },
 };
