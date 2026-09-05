@@ -22,7 +22,7 @@ const corsOrigins = process.env.CORS_ORIGIN
         'http://localhost:3001', 
         'http://localhost:3002',
         'http://localhost:5173',  // Vite default
-        'https://smartpickleball.netlify.app'  // 👈 Your Netlify frontend
+        'https://smartpickle.vercel.app/'  // 👈 Your Vercel frontend
     ];
 
 module.exports = {
