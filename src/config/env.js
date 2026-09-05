@@ -14,14 +14,15 @@ for (const envVar of requiredEnvVars) {
     }
 }
 
-// ✅ UPDATE THIS SECTION - Add your Netlify URL
+// ✅ Include your Netlify URL here
 const corsOrigins = process.env.CORS_ORIGIN 
     ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
     : [
         'http://localhost:3000', 
         'http://localhost:3001', 
         'http://localhost:3002',
-        'https://smartpickleball.netlify.app'  // 👈 ADD THIS LINE
+        'http://localhost:5173',  // Vite default
+        'https://smartpickleball.netlify.app'  // 👈 Your Netlify frontend
     ];
 
 module.exports = {
