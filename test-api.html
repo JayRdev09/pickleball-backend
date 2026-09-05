@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        button { padding: 10px 20px; margin: 5px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .output { background: #f5f5f5; padding: 10px; margin-top: 10px; border-radius: 4px; white-space: pre-wrap; font-family: monospace; max-height: 400px; overflow: auto; }
+        .error { color: #d32f2f; }
+        .success { color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏸 Pickleball API Test</h1>
+        
+        <button onclick="registerPlayer()">Register Player</button>
+        <button onclick="loginPlayer()">Login Player</button>
+        <button onclick="registerOwner()">Register Owner</button>
+        <button onclick="loginOwner()">Login Owner</button>
+        
+        <div id="output" class="output">Ready to test...</div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:3000';
+        const output = document.getElementById('output');
+        
+        function log(message, isError = false) {
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = isError ? '❌' : '✅';
+            output.innerHTML = `[${timestamp}] ${prefix} ${message}\n` + output.innerHTML;
+        }
+        
+        async function apiRequest(endpoint, options = {}) {
+            try {
+                const response = await fetch(`${BASE_URL}${endpoint}`, options);
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                return { error: error.message };
+            }
+        }
+        
+        async function registerPlayer() {
+            log('📝 Registering player...');
+            
+            const result = await apiRequest('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: 'jrbanghal422@gmail.com',
+                    password: 'owner12345',
+                    fullName: 'Godie Banghal',
+                    role: 'player',
+                    phone: '09543999119'
+                })
+            });
+            
+            if (result.success) {
+                log(`✅ Player registered! ID: ${result.data.id}`);
+                localStorage.setItem('userId', result.data.id);
+                log(JSON.stringify(result.data, null, 2));
+            } else {
+                log(`❌ Registration failed: ${result.message || JSON.stringify(result)}`, true);
+            }
+        }
+        
+        async function loginPlayer() {
+            log('🔑 Logging in player...');
+            
+            const result = await apiRequest('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: 'jrbanghal422@gmail.com',
+                    password: 'owner12345'
+                })
+            });
+            
+            if (result.success) {
+                log(`✅ Logged in! Token: ${result.data.token.substring(0, 30)}...`);
+                localStorage.setItem('token', result.data.token);
+                log(JSON.stringify(result.data.user, null, 2));
+            } else {
+                log(`❌ Login failed: ${result.message || JSON.stringify(result)}`, true);
+            }
+        }
+        
+        async function registerOwner() {
+            log('📝 Registering owner...');
+            
+            const result = await apiRequest('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: 'owner@pickleball.com',
+                    password: 'owner123456',
+                    fullName: 'Venue Owner',
+                    role: 'owner',
+                    phone: '1234567890'
+                })
+            });
+            
+            if (result.success) {
+                log(`✅ Owner registered! ID: ${result.data.id}`);
+                log(JSON.stringify(result.data, null, 2));
+            } else {
+                log(`❌ Registration failed: ${result.message || JSON.stringify(result)}`, true);
+            }
+        }
+        
+        async function loginOwner() {
+            log('🔑 Logging in owner...');
+            
+            const result = await apiRequest('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: 'owner@pickleball.com',
+                    password: 'owner123456'
+                })
+            });
+            
+            if (result.success) {
+                log(`✅ Owner logged in! Token: ${result.data.token.substring(0, 30)}...`);
+                localStorage.setItem('ownerToken', result.data.token);
+                log(JSON.stringify(result.data.user, null, 2));
+            } else {
+                log(`❌ Login failed: ${result.message || JSON.stringify(result)}`, true);
+            }
+        }
+        
+        console.log('🚀 API Test Ready! Click the buttons above.');
+    </script>
+</body>
+</html>
