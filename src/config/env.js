@@ -14,9 +14,15 @@ for (const envVar of requiredEnvVars) {
     }
 }
 
+// ✅ UPDATE THIS SECTION - Add your Netlify URL
 const corsOrigins = process.env.CORS_ORIGIN 
     ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
-    : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'];
+    : [
+        'http://localhost:3000', 
+        'http://localhost:3001', 
+        'http://localhost:3002',
+        'https://smartpickleball.netlify.app'  // 👈 ADD THIS LINE
+    ];
 
 module.exports = {
     port: process.env.PORT || 3000,
